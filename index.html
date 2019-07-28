@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="vue.js"></script>
+    <link rel="stylesheet" href="damas.css">
+    <title>Damas</title>
+</head>
+<body>
+    <div id="damas">
+        
+        <!-- Board do jogo -->
+        <div id="board">
+            <div v-for="(row, ri) in board">
+                <div class="board-place" :class="place == null ? 'inactive-place' : '' " v-for="(place, pi) in row">
+                    <span class="possible-places" v-show="place != null && place.player == 3" v-on:click="movePiece(ri, pi)"></span>
+                    <div v-on:click="clickPiece(place.player, ri, pi)" v-if="place != null" :class="place.player == 1 ? 'piece player1' : place.player == 2 ? 'piece player2' : ''"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="sweetalert.min.js"></script>
+    <script src="damas.js"></script>
+</body>
+</html>
