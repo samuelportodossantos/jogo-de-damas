@@ -50,6 +50,8 @@ let damas = new Vue({
             this.playerOfTime = 2;
         },
         clickPiece (player, ri, pi) {
+            this.enemyPiece.ri = null;
+            this.enemyPiece.pi = null;
             if (this.playerOfTime != player) {
                 // swal('Eii!!', 'Você não pode mover as peças do seu oponente!', 'warning');
                 console.log('Você não pode mover as peças do seu oponente!');
@@ -80,11 +82,11 @@ let damas = new Vue({
             this.board[this.pieceOfTime.ri][this.pieceOfTime.pi].player = null;
             this.clearMoveSlots();
             this.playerOfTime = this.playerOfTime == 1 ? 2 : 1;
-            // if (this.enemyPiece.ri != null) {
-            //     this.board[this.enemyPiece.ri][this.enemyPiece.pi].player = null;
-            //     this.enemyPiece.ri = null;
-            //     this.enemyPiece.pi = null;
-            // }
+            if (this.enemyPiece.ri != null) {
+                this.board[this.enemyPiece.ri][this.enemyPiece.pi].player = null;
+                this.enemyPiece.ri = null;
+                this.enemyPiece.pi = null;
+            }
         },
         setPlayablePlace(row, col) {           
             if (this.board[row][col] != null) {
@@ -99,8 +101,10 @@ let damas = new Vue({
                         }
                     }
                 } else {
-                    this.enemyPiece.pi = col;
-                    this.enemyPiece.ri = row;
+                    if (this.board[row][col].player != this.playerOfTime) {
+                        this.enemyPiece.pi = col;
+                        this.enemyPiece.ri = row;
+                    }
                     if (this.playerOfTime == 1) {
                         if (this.pieceOfTime.pi > col) {
                             if ( this.board[row+1][col-1].player == null ) {
