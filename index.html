@@ -10,13 +10,13 @@
 </head>
 <body>
     <div id="damas">
-        
+        <button v-on:click="resetGame()">Reset Game</button>
         <!-- Board do jogo -->
         <div id="board">
             <div v-for="(row, ri) in board">
                 <div class="board-place" :class="place == null ? 'inactive-place' : '' " v-for="(place, pi) in row">
                     <span class="possible-places" v-show="place != null && place.player == 3" v-on:click="movePiece(ri, pi)"></span>
-                    <!-- <span>{{ ri+' - '+pi }}</span> -->
+                    <span>{{ ri+' - '+pi }}</span>
                     <div v-on:click="clickPiece(place.player, ri, pi)" v-if="place != null" :class="place.player == 1 ? 'piece player1' : place.player == 2 ? 'piece player2' : ''"></div>
                 </div>
             </div>

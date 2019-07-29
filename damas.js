@@ -20,10 +20,7 @@ let damas = new Vue({
             pi: null
         },
         playerOfTime: null,
-        enemyPiece: {
-            ri: null,
-            pi: null
-        }
+        enemyPiece: []
     },
     mounted (){
        this.prepareBoard();
@@ -31,12 +28,15 @@ let damas = new Vue({
     },
     methods: {
         prepareBoard () {
-            console.log("Prepareing board!!");
             this.board.map((row, ri)=>{
                 row.map((place, pi)=>{
+                    // place.player = null;
                     if (place != null) {
                         if (ri < 3) {
                             place.player = 1;
+                        }
+                        if (ri >= 3 && ri <= 4) {
+                            place.player = null;
                         }
                         if (ri > 4) {
                             place.player = 2;
@@ -77,16 +77,23 @@ let damas = new Vue({
             this.setPlayablePlace(slots.row, slots.leftCol);
             this.setPlayablePlace(slots.row, slots.rightCol);
         },
-        movePiece (ri, pi) {   
+        movePiece (ri, pi) {
+            console.log(ri, pi);
             this.board[ri][pi].player = this.playerOfTime;
             this.board[this.pieceOfTime.ri][this.pieceOfTime.pi].player = null;
             this.clearMoveSlots();
-            this.playerOfTime = this.playerOfTime == 1 ? 2 : 1;
-            if (this.enemyPiece.ri != null) {
-                this.board[this.enemyPiece.ri][this.enemyPiece.pi].player = null;
-                this.enemyPiece.ri = null;
-                this.enemyPiece.pi = null;
+            
+            if (this.playerOfTime == 1) {
+                //cima p baixo
+            } else {
+                //baixo p cima
+                console.log("Novo slot da peça branca: ", ri, pi);
+                console.log("Local da peça atual: ",this.pieceOfTime);
+                
             }
+            
+            //Troca jogador da vez
+            this.playerOfTime = this.playerOfTime == 1 ? 2 : 1;
         },
         setPlayablePlace(row, col) {           
             if (this.board[row][col] != null) {
@@ -102,8 +109,7 @@ let damas = new Vue({
                     }
                 } else {
                     if (this.board[row][col].player != this.playerOfTime) {
-                        this.enemyPiece.pi = col;
-                        this.enemyPiece.ri = row;
+                        this.enemyPiece.push({ri: row, pi: col});
                     }
                     if (this.playerOfTime == 1) {
                         if (this.pieceOfTime.pi > col) {
@@ -137,6 +143,11 @@ let damas = new Vue({
                     }
                 });
             });
+            this.enemyPiece = [];
+        },
+        resetGame () {
+            this.clearMoveSlots();
+            this.prepareBoard();
         }
     }
 });
