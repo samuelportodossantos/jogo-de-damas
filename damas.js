@@ -19,7 +19,11 @@ let damas = new Vue({
             ri: null,
             pi: null
         },
-        playerOfTime: null
+        playerOfTime: null,
+        enemyPiece: {
+            ri: null,
+            pi: null
+        }
     },
     mounted (){
        this.prepareBoard();
@@ -76,6 +80,11 @@ let damas = new Vue({
             this.board[this.pieceOfTime.ri][this.pieceOfTime.pi].player = null;
             this.clearMoveSlots();
             this.playerOfTime = this.playerOfTime == 1 ? 2 : 1;
+            // if (this.enemyPiece.ri != null) {
+            //     this.board[this.enemyPiece.ri][this.enemyPiece.pi].player = null;
+            //     this.enemyPiece.ri = null;
+            //     this.enemyPiece.pi = null;
+            // }
         },
         setPlayablePlace(row, col) {           
             if (this.board[row][col] != null) {
@@ -90,13 +99,27 @@ let damas = new Vue({
                         }
                     }
                 } else {
-                    if (this.pieceOfTime.pi > col) {
-                        if ( this.board[row-1][col-1].player == null ) {
-                            this.board[row-1][col-1].player = 3;
+                    this.enemyPiece.pi = col;
+                    this.enemyPiece.ri = row;
+                    if (this.playerOfTime == 1) {
+                        if (this.pieceOfTime.pi > col) {
+                            if ( this.board[row+1][col-1].player == null ) {
+                                this.board[row+1][col-1].player = 3;
+                            }
+                        } else {
+                            if ( this.board[row+1][col+1].player == null ) {
+                                this.board[row+1][col+1].player = 3;
+                            }
                         }
                     } else {
-                        if ( this.board[row-1][col+1].player == null ) {
-                            this.board[row-1][col+1].player = 3;
+                        if (this.pieceOfTime.pi > col) {
+                            if ( this.board[row-1][col-1] != null && this.board[row-1][col-1].player == null ) {
+                                this.board[row-1][col-1].player = 3;
+                            }
+                        } else {
+                            if ( this.board[row-1][col+1] != null && this.board[row-1][col+1].player == null ) {
+                                this.board[row-1][col+1].player = 3;
+                            }
                         }
                     }
                 }
