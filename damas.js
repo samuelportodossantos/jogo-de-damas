@@ -46,15 +46,18 @@ let damas = new Vue({
             });
         },
         startRandomPlayer () {
-            console.log("Chosing a player to start randomly. not random at moment xD");
+            console.log("%c [SYSTEM] Escolhendo o jogador que vai iniciar a partida!" ,"color: white; background-color: #09f;");
             this.playerOfTime = 2;
+            this.playerOfTime = Math.floor(Math.random() * 2);
+            setTimeout(()=>{
+                console.log("%c [SYSTEM] O jogador "+this.playerOfTime+" vai iniciar a partida!" ,"color: white; background-color: #09f;");
+            }, 1000);
         },
         clickPiece (player, ri, pi) {
             this.enemyPiece.ri = null;
             this.enemyPiece.pi = null;
             if (this.playerOfTime != player) {
-                // swal('Eii!!', 'Você não pode mover as peças do seu oponente!', 'warning');
-                console.log('Você não pode mover as peças do seu oponente!');
+                console.log("%c [SYSTEM] Você não pode mover as peças do seu oponente!" ,"color: white; background-color: #09f;");
                 return;
             }
             //Set the piece of time
@@ -78,18 +81,19 @@ let damas = new Vue({
             this.setPlayablePlace(slots.row, slots.rightCol);
         },
         movePiece (ri, pi) {
-            console.log(ri, pi);
+
             this.board[ri][pi].player = this.playerOfTime;
             this.board[this.pieceOfTime.ri][this.pieceOfTime.pi].player = null;
             this.clearMoveSlots();
             
             if (this.playerOfTime == 1) {
                 //cima p baixo
+                console.log("%c [BLACK] Slot de destino: "+ri+" "+pi,"color: white; background-color: #555;");
+                console.log("%c [BLACK] Slot de partida: "+this.pieceOfTime.ri+" "+this.pieceOfTime.pi,"color: white; background-color: #555;");
             } else {
                 //baixo p cima
-                console.log("Novo slot da peça branca: ", ri, pi);
-                console.log("Local da peça atual: ",this.pieceOfTime);
-                
+                console.log("%c [WHITE] Slot de destino: "+ri+" "+pi,"color: white; background-color: #83521F;");
+                console.log("%c [WHITE] Slot de partida: "+this.pieceOfTime.ri+" "+this.pieceOfTime.pi,"color: white; background-color: #83521F;");
             }
             
             //Troca jogador da vez
