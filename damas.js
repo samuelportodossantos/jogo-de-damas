@@ -48,7 +48,8 @@ let damas = new Vue({
         startRandomPlayer () {
             console.log("%c [SYSTEM] Escolhendo o jogador que vai iniciar a partida!" ,"color: white; background-color: #09f;");
             this.playerOfTime = 2;
-            this.playerOfTime = Math.floor(Math.random() * 2);
+            // this.playerOfTime = Math.floor(Math.random() * 2);
+            this.playerOfTime = 2;
             setTimeout(()=>{
                 console.log("%c [SYSTEM] O jogador "+this.playerOfTime+" vai iniciar a partida!" ,"color: white; background-color: #09f;");
             }, 1000);
@@ -84,13 +85,29 @@ let damas = new Vue({
 
             this.board[ri][pi].player = this.playerOfTime;
             this.board[this.pieceOfTime.ri][this.pieceOfTime.pi].player = null;
-            this.clearMoveSlots();
+            
+            
             
             if (this.playerOfTime == 1) {
+
+            
+
                 //cima p baixo
-                console.log("%c [BLACK] Slot de destino: "+ri+" "+pi,"color: white; background-color: #555;");
-                console.log("%c [BLACK] Slot de partida: "+this.pieceOfTime.ri+" "+this.pieceOfTime.pi,"color: white; background-color: #555;");
+                console.log("%c [BLACK] Slot de destino: ri: "+ri+" pi: "+pi,"color: white; background-color: #555;");
+                console.log("%c [BLACK] Slot de partida: ri: "+this.pieceOfTime.ri+" pi: "+this.pieceOfTime.pi,"color: white; background-color: #555;");
+
             } else {
+                
+                this.enemyPiece.map((enemy)=>{
+
+                    if (pi < enemy.pi) {
+                        console.log("A peça esta a esquerda");
+                        this.pontuar(this.playerOfTime, enemy);
+                    }
+                    
+                  
+                });
+
                 //baixo p cima
                 console.log("%c [WHITE] Slot de destino: "+ri+" "+pi,"color: white; background-color: #83521F;");
                 console.log("%c [WHITE] Slot de partida: "+this.pieceOfTime.ri+" "+this.pieceOfTime.pi,"color: white; background-color: #83521F;");
@@ -98,6 +115,7 @@ let damas = new Vue({
             
             //Troca jogador da vez
             this.playerOfTime = this.playerOfTime == 1 ? 2 : 1;
+            this.clearMoveSlots();
         },
         setPlayablePlace(row, col) {           
             if (this.board[row][col] != null) {
@@ -110,7 +128,7 @@ let damas = new Vue({
                         if (col == this.pieceOfTime.pi + 1 || col == this.pieceOfTime.pi - 1) {
                             this.board[this.pieceOfTime.ri - 1][col].player = 3;
                         }
-                    }
+                    }                    
                 } else {
                     if (this.board[row][col].player != this.playerOfTime) {
                         this.enemyPiece.push({ri: row, pi: col});
@@ -138,6 +156,7 @@ let damas = new Vue({
                     }
                 }
             }
+            
         },
         clearMoveSlots () {
             this.board.map((rows)=>{               
@@ -152,6 +171,10 @@ let damas = new Vue({
         resetGame () {
             this.clearMoveSlots();
             this.prepareBoard();
+        },
+        pontuar (playerOfTime, enemyPiece) {
+            this.board[enemyPiece.ri][enemyPiece.pi].player = null;
+            console.log(enemyPiece);
         }
     }
 });
