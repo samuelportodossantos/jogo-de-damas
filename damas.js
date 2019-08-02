@@ -122,30 +122,54 @@ let damas = new Vue({
                         }
                     }
                 } else {
+                    
                     if (this.board[row][col].player != this.playerOfTime) {
                         this.enemyPiece.push({ri: row, pi: col});
                     }
-                    if (this.playerOfTime == 1) {
-                        if (this.pieceOfTime.pi > col) {
-                            if ( this.board[row+1][col-1].player == null && this.board[row-1][col-1].player == 2 ) {
-                                this.board[row+1][col-1].player = 3;
-                            }
+
+                    this.enemyPiece.map((enemy) => {
+                        console.log(enemy);
+
+                        let topRight = {};
+                        let topLeft = {};
+                        let downRight = {};
+                        let downLeft = {};
+                        
+                        // Verificar proxima posicao em relacao a peça do inimigo, direito 
+
+                        if (this.playerOfTime == 2) {
+                            topLeft.ri = enemy.ri - 1;
+                            topLeft.pi = enemy.pi - 1;
+                            this.setPlayable(topLeft);
                         } else {
-                            if ( this.board[row+1][col+1].player == null && this.board[row-1][col-1].player == 2 ) {
-                                this.board[row+1][col+1].player = 3;
-                            }
+
                         }
-                    } else {
-                        if (this.pieceOfTime.pi > col) {
-                            if ( this.board[row-1][col-1] != null && this.board[row-1][col-1].player == 1) {
-                                this.board[row-1][col-1].player = 3;
-                            }
-                        } else {
-                            if ( this.board[row-1][col+1] != null && this.board[row-1][col+1].player == 1 ) {
-                                this.board[row-1][col+1].player = 3;
-                            }
-                        }
-                    }
+
+                       
+
+                    });
+
+                    // if (this.playerOfTime == 1) {
+                    //     if (this.pieceOfTime.pi > col) {
+                    //         if ( this.board[row+1][col-1].player == null && this.board[row-1][col-1].player == 2 ) {
+                    //             this.board[row+1][col-1].player = 3;
+                    //         }
+                    //     } else {
+                    //         if ( this.board[row+1][col+1].player == null && this.board[row-1][col-1].player == 2 ) {
+                    //             this.board[row+1][col+1].player = 3;
+                    //         }
+                    //     }
+                    // } else {
+                    //     if (this.pieceOfTime.pi > col) {
+                    //         if ( this.board[row-1][col-1] != null && this.board[row-1][col-1].player == 1) {
+                    //             this.board[row-1][col-1].player = 3;
+                    //         }
+                    //     } else {
+                    //         if ( this.board[row-1][col+1] != null && this.board[row-1][col+1].player == 1 ) {
+                    //             this.board[row-1][col+1].player = 3;
+                    //         }
+                    //     }
+                    // }
                 }
             }
             
@@ -166,7 +190,12 @@ let damas = new Vue({
         },
         pontuar (playerOfTime, enemyPiece) {
             this.board[enemyPiece.ri][enemyPiece.pi].player = null;
-            console.log(enemyPiece);
+        },
+        setPlayable (place) {
+            console.log(place);
+            if (this.board[place.ri] != undefined && this.board[place.ri][place.pi] != undefined) {
+                this.board[place.ri][place.pi].player = 3;
+            }
         }
     }
 });
