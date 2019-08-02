@@ -85,71 +85,63 @@ let damas = new Vue({
 
             this.board[ri][pi].player = this.playerOfTime;
             this.board[this.pieceOfTime.ri][this.pieceOfTime.pi].player = null;
-            
-            
-            
-            if (this.playerOfTime == 1) {
 
-            
 
-                //cima p baixo
-                console.log("%c [BLACK] Slot de destino: ri: "+ri+" pi: "+pi,"color: white; background-color: #555;");
-                console.log("%c [BLACK] Slot de partida: ri: "+this.pieceOfTime.ri+" pi: "+this.pieceOfTime.pi,"color: white; background-color: #555;");
+            this.enemyPiece.map((enemy)=>{
 
-            } else {
+                if (pi < enemy.pi && this.pieceOfTime.pi > enemy.pi) {
+                    console.log("A peça esta a esquerda");
+                    this.pontuar(this.playerOfTime, enemy);
+                }
+
+                if (pi > enemy.pi && this.pieceOfTime.pi < enemy.pi) {
+                    console.log("A peça esta a direita");
+                    this.pontuar(this.playerOfTime, enemy);
+                }
                 
-                this.enemyPiece.map((enemy)=>{
-
-                    if (pi < enemy.pi) {
-                        console.log("A peça esta a esquerda");
-                        this.pontuar(this.playerOfTime, enemy);
-                    }
-                    
-                  
-                });
-
-                //baixo p cima
-                console.log("%c [WHITE] Slot de destino: "+ri+" "+pi,"color: white; background-color: #83521F;");
-                console.log("%c [WHITE] Slot de partida: "+this.pieceOfTime.ri+" "+this.pieceOfTime.pi,"color: white; background-color: #83521F;");
-            }
+                
+                this.players[!this.playerOfTime+1].junk++;
+                
+            });
+            
             
             //Troca jogador da vez
             this.playerOfTime = this.playerOfTime == 1 ? 2 : 1;
             this.clearMoveSlots();
         },
         setPlayablePlace(row, col) {           
+          
+
             if (this.board[row][col] != null) {
                 if (this.board[row][col].player != this.playerOfTime && this.board[row][col].player == null)  {
-                    if (this.playerOfTime == 1) {
-                        if (col == this.pieceOfTime.pi + 1 || col == this.pieceOfTime.pi - 1) {
+                    if (col == this.pieceOfTime.pi + 1 || col == this.pieceOfTime.pi - 1) {
+                        if (this.playerOfTime == 1) {
                             this.board[this.pieceOfTime.ri + 1][col].player = 3;
-                        }
-                    } else {
-                        if (col == this.pieceOfTime.pi + 1 || col == this.pieceOfTime.pi - 1) {
+                        } else {
                             this.board[this.pieceOfTime.ri - 1][col].player = 3;
                         }
-                    }                    
+                    }
                 } else {
                     if (this.board[row][col].player != this.playerOfTime) {
                         this.enemyPiece.push({ri: row, pi: col});
                     }
                     if (this.playerOfTime == 1) {
                         if (this.pieceOfTime.pi > col) {
-                            if ( this.board[row+1][col-1].player == null ) {
+                            if ( this.board[row+1][col-1].player == null && this.board[row-1][col-1].player == 2 ) {
                                 this.board[row+1][col-1].player = 3;
                             }
                         } else {
-                            if ( this.board[row+1][col+1].player == null ) {
+                            if ( this.board[row+1][col+1].player == null && this.board[row-1][col-1].player == 2 ) {
                                 this.board[row+1][col+1].player = 3;
                             }
                         }
                     } else {
                         if (this.pieceOfTime.pi > col) {
-                            if ( this.board[row-1][col-1] != null && this.board[row-1][col-1].player == null ) {
+                            if ( this.board[row-1][col-1] != null && this.board[row-1][col-1].player == 1) {
                                 this.board[row-1][col-1].player = 3;
                             }
                         } else {
-                            if ( this.board[row-1][col+1] != null && this.board[row-1][col+1].player == null ) {
+                            if ( this.board[row-1][col+1] != null && this.board[row-1][col+1].player == 1 ) {
                                 this.board[row-1][col+1].player = 3;
                             }
                         }
