@@ -30,6 +30,7 @@ body{
     left: calc(50% - 22.5px);
     top: calc(50% - 22.5px);
     cursor: grab;
+    opacity: 0.5;
 }
 .player1{
     background: linear-gradient(60deg, #848484, #1f1f1f);
@@ -54,4 +55,10 @@ body{
     height: 100%;
     border: 3px solid #f00;
     cursor: pointer;
+}
+
+.pontuacao{
+    color: #FFF;
+    background: #333;
+    padding: 5px;
 }

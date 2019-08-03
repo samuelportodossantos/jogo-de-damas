@@ -1,9 +1,16 @@
+function log (string, color = null) {
+    if (color == null) {
+        color = "#09f"   
+    }
+    console.log(`%c ${string}`, `color: white; background-color: ${color};`);
+}
+
 let damas = new Vue({
     el: "#damas",
     data: {
         players: [
-            {name: 'Samuel', team: 'black', junk: 0},
-            {name: 'Lizangela', team: 'white', junk: 0},
+            {name: 'Black Pieces', team: 'black', junk: 0},
+            {name: 'White Pieces', team: 'white', junk: 0},
         ],
         board: [
             [{player: null},null,{player: null},null,{player: 1},null,{player: null},null],
@@ -17,7 +24,7 @@ let damas = new Vue({
         ],
         pieceOfTime: {
             ri: null,
-            pi: null
+            column: null
         },
         playerOfTime: null,
         enemyPiece: []
@@ -46,33 +53,33 @@ let damas = new Vue({
             });
         },
         startRandomPlayer () {
-            console.log("%c [SYSTEM] Escolhendo o jogador que vai iniciar a partida!" ,"color: white; background-color: #09f;");
+            log('[SYSTEM] Escolhendo o jogador que vai iniciar a partida!', '#09f')
             this.playerOfTime = 2;
             // this.playerOfTime = Math.floor(Math.random() * 2);
             this.playerOfTime = 2;
             setTimeout(()=>{
-                console.log("%c [SYSTEM] O jogador "+this.playerOfTime+" vai iniciar a partida!" ,"color: white; background-color: #09f;");
+                log('[SYSTEM] O jogador '+this.playerOfTime+' vai iniciar a partida!', '#09f');
             }, 1000);
         },
-        clickPiece (player, ri, pi) {
-            this.enemyPiece.ri = null;
-            this.enemyPiece.pi = null;
+        clickPiece (player, row, column) {
+            this.enemyPiece.row = null;
+            this.enemyPiece.column = null;
             if (this.playerOfTime != player) {
                 console.log("%c [SYSTEM] Você não pode mover as peças do seu oponente!" ,"color: white; background-color: #09f;");
                 return;
             }
             //Set the piece of time
-            this.pieceOfTime.ri = ri;
-            this.pieceOfTime.pi = pi;
+            this.pieceOfTime.row = row;
+            this.pieceOfTime.column = column;
             let slots = {
-                rightCol : pi + 1,
-                leftCol  : pi - 1
+                rightCol : column + 1,
+                leftCol  : column - 1
             }
             if (player == 1) {
-                slots.row = ri + 1;
+                slots.row = row + 1;
             }
             if (player == 2) {
-                slots.row = ri - 1;
+                slots.row = row - 1;
             }
             this.checkSlot(slots);
         },
@@ -81,27 +88,24 @@ let damas = new Vue({
             this.setPlayablePlace(slots.row, slots.leftCol);
             this.setPlayablePlace(slots.row, slots.rightCol);
         },
-        movePiece (ri, pi) {
+        movePiece (row, column) {
 
-            this.board[ri][pi].player = this.playerOfTime;
-            this.board[this.pieceOfTime.ri][this.pieceOfTime.pi].player = null;
+            this.board[row][column].player = this.playerOfTime;
+            this.board[this.pieceOfTime.row][this.pieceOfTime.column].player = null;
 
 
             this.enemyPiece.map((enemy)=>{
 
-                if (pi < enemy.pi && this.pieceOfTime.pi > enemy.pi) {
+                if (column < enemy.column && this.pieceOfTime.column > enemy.column) {
                     console.log("A peça esta a esquerda");
-                    this.pontuar(this.playerOfTime, enemy);
+                    this.board[enemy.row][enemy.column].player = null;
                 }
 
-                if (pi > enemy.pi && this.pieceOfTime.pi < enemy.pi) {
+                if (column > enemy.column && this.pieceOfTime.column < enemy.column) {
                     console.log("A peça esta a direita");
-                    this.pontuar(this.playerOfTime, enemy);
+                    this.board[enemy.row][enemy.column].player = null;
                 }
-                
-                
                 this.players[!this.playerOfTime+1].junk++;
-                
             });
             
             
@@ -109,67 +113,61 @@ let damas = new Vue({
             this.playerOfTime = this.playerOfTime == 1 ? 2 : 1;
             this.clearMoveSlots();
         },
-        setPlayablePlace(row, col) {           
-          
+        setPlayablePlace(row, column) {           
 
-            if (this.board[row][col] != null) {
-                if (this.board[row][col].player != this.playerOfTime && this.board[row][col].player == null)  {
-                    if (col == this.pieceOfTime.pi + 1 || col == this.pieceOfTime.pi - 1) {
+            if (this.board[row][column] != null) {
+                if (this.board[row][column].player != this.playerOfTime && this.board[row][column].player == null)  {
+                    if (column == this.pieceOfTime.column + 1 || column == this.pieceOfTime.column - 1) {
                         if (this.playerOfTime == 1) {
-                            this.board[this.pieceOfTime.ri + 1][col].player = 3;
+                            this.board[this.pieceOfTime.row + 1][column].player = 3;
                         } else {
-                            this.board[this.pieceOfTime.ri - 1][col].player = 3;
+                            this.board[this.pieceOfTime.row - 1][column].player = 3;
                         }
                     }
                 } else {
                     
-                    if (this.board[row][col].player != this.playerOfTime) {
-                        this.enemyPiece.push({ri: row, pi: col});
+                    if (this.board[row][column].player != this.playerOfTime) {
+                        this.enemyPiece.push({row: row, column: column});
                     }
 
                     this.enemyPiece.map((enemy) => {
-                        console.log(enemy);
 
-                        let topRight = {};
-                        let topLeft = {};
-                        let downRight = {};
-                        let downLeft = {};
+                        // console.log("Peça do inimigo: ", enemy);
+                        // console.log("Peça do jogador: ", this.pieceOfTime);
+
+                        let coluna_atual_jogador = this.pieceOfTime.column;
+                        let coluna_atual_inimigo = enemy.column;
+
+                        console.log("Coluna do inimigo", coluna_atual_inimigo);
+                        console.log("Coluna do jogador", coluna_atual_jogador);
                         
-                        // Verificar proxima posicao em relacao a peça do inimigo, direito 
+                        // De que lado está a peça do inimigo em relacao ao jogador?
 
-                        if (this.playerOfTime == 2) {
-                            topLeft.ri = enemy.ri - 1;
-                            topLeft.pi = enemy.pi - 1;
-                            this.setPlayable(topLeft);
-                        } else {
-
+                        // Jogando de cima pra baixo
+                        if (this.playerOfTime == 1) {
+                            if (coluna_atual_inimigo < coluna_atual_jogador) {
+                                log('[SYSTEM] Peça do inimigo está a esquerda', 'green');
+                                this.enemyPlayablePlaces(enemy, 'left', 'topdown');
+                            } else {
+                                log('[SYSTEM] Peça do inimigo está a direita', 'green');
+                                this.enemyPlayablePlaces(enemy, 'right', 'topdown');
+                            }
                         }
-
-                       
+                        // Jogando de baixo pra cima
+                        else {
+                            if (coluna_atual_inimigo < coluna_atual_jogador) {
+                                log('[SYSTEM] Peça do inimigo está a esquerda', 'purple');
+                                this.enemyPlayablePlaces(enemy, 'left', 'downtop');
+                            } else {
+                                log('[SYSTEM] Peça do inimigo está a direita', 'purple');
+                                this.enemyPlayablePlaces(enemy, 'right', 'downtop');
+                            }
+                        }
+                        
 
                     });
 
-                    // if (this.playerOfTime == 1) {
-                    //     if (this.pieceOfTime.pi > col) {
-                    //         if ( this.board[row+1][col-1].player == null && this.board[row-1][col-1].player == 2 ) {
-                    //             this.board[row+1][col-1].player = 3;
-                    //         }
-                    //     } else {
-                    //         if ( this.board[row+1][col+1].player == null && this.board[row-1][col-1].player == 2 ) {
-                    //             this.board[row+1][col+1].player = 3;
-                    //         }
-                    //     }
-                    // } else {
-                    //     if (this.pieceOfTime.pi > col) {
-                    //         if ( this.board[row-1][col-1] != null && this.board[row-1][col-1].player == 1) {
-                    //             this.board[row-1][col-1].player = 3;
-                    //         }
-                    //     } else {
-                    //         if ( this.board[row-1][col+1] != null && this.board[row-1][col+1].player == 1 ) {
-                    //             this.board[row-1][col+1].player = 3;
-                    //         }
-                    //     }
-                    // }
+                   
                 }
             }
             
@@ -188,14 +186,71 @@ let damas = new Vue({
             this.clearMoveSlots();
             this.prepareBoard();
         },
-        pontuar (playerOfTime, enemyPiece) {
-            this.board[enemyPiece.ri][enemyPiece.pi].player = null;
-        },
-        setPlayable (place) {
-            console.log(place);
-            if (this.board[place.ri] != undefined && this.board[place.ri][place.pi] != undefined) {
-                this.board[place.ri][place.pi].player = 3;
+        enemyPlayablePlaces (enemy, side, vertical_position ) {
+            // retorna um array com as coordenadas das posiveis jogadas em relacao a peca do inimigo
+
+            let casa_horizontal;
+            let casa_vertical;
+
+            if (side == 'left') {
+                log('[LEFT SIDE]', 'orange');
+
+                log(`enemy row ${enemy.row} | enemy column ${enemy.column}`);
+                
+                // posivel casa a esquerda do inimigo
+                casa_horizontal = enemy.column - 1;
+                
+                if (vertical_position == 'downtop') {
+                    casa_vertical = enemy.row - 1;
+                } else if (vertical_position == 'topdown') {
+                    casa_vertical = enemy.row + 1;
+                }
+
+                // Verifica se as posicoes são validas
+                if (casa_vertical < 0 || casa_vertical > 7) {
+                    log(`Posicao vertical ${casa_vertical} não é válida`, 'red');
+                    return false;
+                }
+                if (casa_horizontal < 0 || casa_horizontal > 7) {
+                    log(`Posicao horizontal ${casa_horizontal} não é válida`, 'lightcoral');
+                    return false;
+                }
+                if (this.board[casa_vertical][casa_horizontal].player != null) {
+                    log(`[SYSTEM] O inimimgo não pode ser abatido! v:${casa_vertical} h:${casa_horizontal}`, 'red');
+                    return false;
+                }
+                this.board[casa_vertical][casa_horizontal].player = 3;
+                
+            } else if (side == 'right') {
+                log('[RIGHT SIDE]', 'orange');
+                
+                log(`enemy row ${enemy.row} | enemy column ${enemy.column}`);
+                
+                // posivel casa a esquerda do inimigo
+                casa_horizontal = enemy.column + 1;
+                
+                if (vertical_position == 'downtop') {
+                    casa_vertical = enemy.row - 1;
+                } else if (vertical_position == 'topdown') {
+                    casa_vertical = enemy.row + 1;
+                }
+
+                // Verifica se as posicoes são validas
+                if (casa_vertical < 0 || casa_vertical > 7) {
+                    log(`Posicao vertical ${casa_vertical} não é válida`, 'red');
+                    return false;
+                }
+                if (casa_horizontal < 0 || casa_horizontal > 7) {
+                    log(`Posicao horizontal ${casa_horizontal} não é válida`, 'lightcoral');
+                    return false;
+                }
+                if (this.board[casa_vertical][casa_horizontal].player != null) {
+                    log(`[SYSTEM] O inimimgo não pode ser abatido! v:${casa_vertical} h:${casa_horizontal}`, 'red');
+                    return false;
+                }
+                this.board[casa_vertical][casa_horizontal].player = 3;
             }
         }
+        
     }
 });
