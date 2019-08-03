@@ -27,13 +27,19 @@ let damas = new Vue({
             column: null
         },
         playerOfTime: null,
-        enemyPiece: []
+        enemyPiece: [],
     },
     mounted (){
-       this.prepareBoard();
-       this.startRandomPlayer();
+        this.prepareBoard();
+        this.startRandomPlayer();
+        this.playBackgroundSong();
     },
     methods: {
+        playBackgroundSong () {
+            let bgaudio = new Audio('sounds/background.mp3');
+            bgaudio.loop = true;
+            // bgaudio.play();
+        },
         prepareBoard () {
             this.board.map((row, ri)=>{
                 row.map((place, pi)=>{
