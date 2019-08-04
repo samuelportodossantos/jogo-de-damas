@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="vue.js"></script>
-    <link rel="stylesheet" href="damas.css">
+    <script src="lib/vue.js"></script>
+    <link rel="stylesheet" href="assets/css/damas.css">
     <title>Damas</title>
 </head>
 <body>
@@ -16,20 +16,26 @@
             </ul>
         </div>
 
+        <br>
         <button v-on:click="resetGame()">Reset Game</button>
+        <br>
+        <br>
+        <button v-on:click="displayDebug()">Debug</button>
+
         <!-- Board do jogo -->
         <div id="board">
             <div v-for="(row, ri) in board">
                 <div class="board-place" :class="place == null ? 'inactive-place' : '' " v-for="(place, pi) in row">
                     <span class="possible-places" v-show="place != null && place.player == 3" v-on:click="movePiece(ri, pi)"></span>
-                    <!-- <span>{{ 'row: '+ri+' - column'+pi }}</span> -->
+                    <span class="debug-piece" v-show="debug == true"> <p>{{ 'row: '+ri }}</p> <p>{{ 'col: '+pi }}</p></span>
                     <div v-on:click="clickPiece(place.player, ri, pi)" v-if="place != null" :class="place.player == 1 ? 'piece player1' : place.player == 2 ? 'piece player2' : ''"></div>
                 </div>
             </div>
         </div>
 
     </div>
-    <script src="sweetalert.min.js"></script>
-    <script src="damas.js"></script>
+    <script src="lib/sweetalert.min.js"></script>
+    <script src="lib/socket.io.min.js"></script>
+    <script src="assets/js/damas.js"></script>
 </body>
 </html>
