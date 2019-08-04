@@ -1,7 +1,20 @@
 *{padding: 0; margin: 0; box-sizing: border-box;font-family: 'Lato', sans-serif;}
 body{
-    background: url('images/background.jpg') center center no-repeat;
+    background: url('../images/background.jpg') center center no-repeat;
     background-attachment: fixed;
+}
+body.debug .piece {
+    opacity: 0.5;
+}
+button {
+    border: none;
+    background: #09f;
+    padding: 10px 20px;
+    color: #FFF;
+    cursor: pointer;
+}
+.opacity5 {
+    opacity: 0.5;
 }
 #board {
     position: absolute;
@@ -30,7 +43,6 @@ body{
     left: calc(50% - 22.5px);
     top: calc(50% - 22.5px);
     cursor: grab;
-    opacity: 0.5;
 }
 .player1{
     background: linear-gradient(60deg, #848484, #1f1f1f);
@@ -57,8 +69,28 @@ body{
     cursor: pointer;
 }
 
-.pontuacao{
-    color: #FFF;
+.pontuacao {
+    color: lightgreen;
     background: #333;
     padding: 5px;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    font-weight: bold;
+}
+.pontuacao li {
+    list-style: none;
+}
+
+span.debug-piece {
+    font-size: 0.475em;
+    color: #FFF;
+    background: #333;
+    display: block;
+    position: absolute;
+    padding: 5px;
+    left: 3px;
+    z-index: 9;
+    border-radius: 5px;
+    top: 3px;
 }
