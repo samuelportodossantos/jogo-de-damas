@@ -95,7 +95,6 @@ let damas = new Vue({
             this.board[row][column].player = this.playerOfTime;
             this.board[this.pieceOfTime.row][this.pieceOfTime.column].player = null;
 
-
             this.enemyPiece.map((enemy)=>{
 
                 if (column < enemy.column && this.pieceOfTime.column > enemy.column) {
@@ -107,10 +106,10 @@ let damas = new Vue({
                     this.log("A peça esta a direita");
                     this.board[enemy.row][enemy.column].player = null;
                 }
-                this.players[!this.playerOfTime+1].junk++;
+                console.log(this.playerOfTime-1);
+                this.players[this.playerOfTime-1].junk++;
             });
-            
-            
+                        
             //Troca jogador da vez
             this.playerOfTime = this.playerOfTime == 1 ? 2 : 1;
             this.clearMoveSlots();
@@ -156,7 +155,6 @@ let damas = new Vue({
                         }
 
                     });
-
                    
                 }
             }
